@@ -1,8 +1,0 @@
-[
-{
-  "directory": "C:/Users/gabri/Desktop/Faculdade/sistemas_evolutivos/Snake Game/out/build/GCC 16.2.0 x86_64-w64-mingw32 (ucrt64)",
-  "command": "C:\\msys64\\ucrt64\\bin\\g++.exe   -g -std=gnu++17 -o CMakeFiles\\main.dir\\main.cpp.obj -c \"C:\\Users\\gabri\\Desktop\\Faculdade\\sistemas_evolutivos\\Snake Game\\main.cpp\"",
-  "file": "C:/Users/gabri/Desktop/Faculdade/sistemas_evolutivos/Snake Game/main.cpp",
-  "output": "CMakeFiles/main.dir/main.cpp.obj"
-}
-]
