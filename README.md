@@ -25,15 +25,11 @@ Projeto desenvolvido para a disciplina **SSC0713 (ICMC-USP)**, em C++ com a bibl
 
 ### O melhor indivíduo jogando
 
-> 📌 **Adicionar aqui o GIF do jogo** (`docs/jogo.gif`, copiado de `melhor_jogando.gif`)
-
 <p align="center">
   <img src="docs/jogo.gif" alt="Melhor indivíduo da geração jogando Snake" width="450">
 </p>
 
 ### Evolução da população ao longo das gerações
-
-> 📌 **Adicionar aqui o gráfico gerado no fim do treino** (`docs/grafico_fitness.png`)
 
 <p align="center">
   <img src="docs/grafico_fitness.png" alt="Gráfico de evolução do fitness" width="850">
