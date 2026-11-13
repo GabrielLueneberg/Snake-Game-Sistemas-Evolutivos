@@ -13,7 +13,7 @@ Projeto desenvolvido para a disciplina **SSC0713 (ICMC-USP)**, em C++ com a bibl
   1. Crie uma pasta chamada "docs" na raiz do repositório.
   2. Copie a animação gerada no fim do treino      melhor_jogando.gif  ->  docs/jogo.gif
   3. Copie o gráfico gerado no fim do treino        grafico_fitness.png ->  docs/grafico_fitness.png
-     (os dois são salvos automaticamente ao lado do main.exe, em out/build/<preset>/)
+     (os dois ficam em out/build/<preset>/resultados/<configuração>/, ex.: resultados/perceptron/)
   4. Faça commit e push da pasta docs.
 
   ALTERNATIVA COM VÍDEO (MP4):
@@ -289,6 +289,7 @@ cd ".\out\build\GCC 16.2.0 x86_64-w64-mingw32 (ucrt64)"
 .\main.exe --grafico       # só a janela do gráfico (lê o evolucao.csv existente)
 .\main.exe --jogar         # usa a rede JÁ TREINADA para jogar fases novas, sem treinar
 .\main.exe --sem-janela --continuar   # continua o último treino em vez de começar do zero
+.\main.exe --exportar      # gera o PNG e o GIF a partir do que já foi salvo
 ```
 
 **Controles:**
@@ -298,7 +299,16 @@ cd ".\out\build\GCC 16.2.0 x86_64-w64-mingw32 (ucrt64)"
 
 ### Arquivos gerados
 
-Todos ficam na mesma pasta do `main.exe`:
+Cada configuração da rede tem **sua própria pasta**, dentro da pasta do `main.exe`. Assim, testes com redes diferentes nunca se sobrescrevem:
+
+```
+out/build/<preset>/resultados/
+├── perceptron/                 # NEURONIOS_OCULTOS = 0
+├── multicamada_16_ocultos/     # NEURONIOS_OCULTOS = 16
+└── perceptron_sensores_simples/   # SENSORES_AVANCADOS = 0
+```
+
+A pasta usada é escolhida automaticamente a partir das constantes do `main.cpp` e aparece no terminal ao iniciar o programa. O subtítulo do gráfico também indica a configuração. Em cada pasta ficam:
 
 | Arquivo | Conteúdo |
 |---|---|
@@ -319,6 +329,14 @@ Se a curva ainda estiver subindo no fim do treino (sem convergir), não é preci
    ```
 
 O treino segue da última geração salva, e o gráfico mantém o histórico desde a geração 1. O resultado é **idêntico** ao de um treino que tivesse rodado todas as gerações de uma vez. Isso também protege contra interrupções: se o programa for fechado no meio, basta rodar de novo com `--continuar`. Só não é possível continuar se `SENSORES_AVANCADOS`, `NEURONIOS_OCULTOS` ou `POP_SIZE` tiverem mudado.
+
+### Interrompendo um treino
+
+O treino pode ser interrompido a qualquer momento: **Ctrl+C** no terminal ou fechando a janela do jogo. Como tudo é salvo a cada geração, só se perde a geração que estava em andamento. Depois de interromper:
+
+- `.\main.exe --exportar` gera o gráfico (`grafico_fitness.png`) e a animação (`melhor_jogando.gif`), que normalmente só são criados no fim do treino;
+- `.\main.exe --jogar` já funciona com a rede da última geração salva;
+- `.\main.exe --sem-janela --continuar` retoma o treino de onde parou.
 
 ### Usando a rede treinada
 
