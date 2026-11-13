@@ -173,7 +173,7 @@ Cada indivíduo joga **3 partidas** em fases diferentes, e seu fitness é a **m�
 
 Para evitar partidas infinitas:
 - a cobra **morre de fome** se passar **300 passos sem comer**;
-- a partida termina ao atingir **10 000 passos**.
+- a partida termina ao atingir **100 000 passos** (limite alto, só para garantir que ela acaba).
 
 O máximo teórico é de **897 comidas** (o tabuleiro tem 30 × 30 = 900 células e a cobra começa com 3).
 
@@ -251,7 +251,7 @@ Todos ficam no topo do `main.cpp`:
 | `SIGMA_INIT` | `0.5` | Intensidade de mutação inicial (σ) |
 | `SIGMA_MIN` / `SIGMA_MAX` | `0.01` / `2.0` | Limites do σ |
 | `STARVE_LIMIT` | `300` | Passos sem comer até morrer de fome |
-| `MAX_STEPS` | `10000` | Limite de passos por partida |
+| `MAX_STEPS` | `100000` | Limite de passos por partida |
 | `CELL_COUNT` | `30` | Tamanho do tabuleiro (30 × 30) |
 | `GA_SEED` | `2026` | Semente aleatória (troque para repetir o experimento com outra sorte) |
 
@@ -288,6 +288,7 @@ cd ".\out\build\GCC 16.2.0 x86_64-w64-mingw32 (ucrt64)"
 .\main.exe --sem-janela    # treino mais rápido, só no terminal
 .\main.exe --grafico       # só a janela do gráfico (lê o evolucao.csv existente)
 .\main.exe --jogar         # usa a rede JÁ TREINADA para jogar fases novas, sem treinar
+.\main.exe --sem-janela --continuar   # continua o último treino em vez de começar do zero
 ```
 
 **Controles:**
@@ -303,8 +304,21 @@ Todos ficam na mesma pasta do `main.exe`:
 |---|---|
 | `evolucao.csv` | Estatísticas de cada geração |
 | `melhor_individuo.txt` | Pesos do melhor indivíduo: a **rede treinada** |
+| `populacao.txt` | População inteira da última geração (usada pelo `--continuar`) |
 | `grafico_fitness.png` | Gráfico da evolução (2400 × 1500) |
 | `melhor_jogando.gif` | Animação de uma partida do melhor da última geração |
+
+### Continuando um treino
+
+Se a curva ainda estiver subindo no fim do treino (sem convergir), não é preciso recomeçar do zero. A cada geração, o programa salva a **população inteira** em `populacao.txt`, junto com o estado do sorteio aleatório. Para treinar mais:
+
+1. Aumente `NUM_GENERATIONS` no `main.cpp` (por exemplo, de `200` para `400`) e compile.
+2. Rode com `--continuar` (com ou sem janela):
+   ```powershell
+   .\main.exe --sem-janela --continuar
+   ```
+
+O treino segue da última geração salva, e o gráfico mantém o histórico desde a geração 1. O resultado é **idêntico** ao de um treino que tivesse rodado todas as gerações de uma vez. Isso também protege contra interrupções: se o programa for fechado no meio, basta rodar de novo com `--continuar`. Só não é possível continuar se `SENSORES_AVANCADOS`, `NEURONIOS_OCULTOS` ou `POP_SIZE` tiverem mudado.
 
 ### Usando a rede treinada
 
@@ -314,6 +328,36 @@ O resultado do treino é apenas uma lista de números: os pesos do perceptron. E
 - Para usar outra rede salva: `.\main.exe --jogar caminho\do\arquivo.txt`
 - A rede só funciona com a mesma configuração (`SENSORES_AVANCADOS` e `NEURONIOS_OCULTOS`) com que foi treinada; se não combinar, o programa avisa.
 - Como a semente do algoritmo (`GA_SEED`) é fixa, rodar o treino de novo com o mesmo código gera **exatamente o mesmo resultado**. Para outro experimento, troque a semente.
+
+---
+
+## 📁 Estrutura do projeto
+
+```
+├── main.cpp            # jogo, rede neural, algoritmo genético e gráficos
+├── CMakeLists.txt      # receita de compilação (CMake)
+├── CMakePresets.json   # configuração do compilador (MSYS2 / ucrt64)
+├── README.md
+└── docs/               # imagens usadas neste README
+    ├── jogo.gif
+    └── grafico_fitness.png
+```
+
+No código, as principais partes são:
+
+| Parte | Responsabilidade |
+|---|---|
+| `class Game` | Regras do Snake, sensores e motivo do fim da partida |
+| `ChooseDirection()` | O perceptron: transforma sensores em uma ação |
+| `PlayGame()` | Joga uma partida e calcula o fitness |
+| `class GeneticAlgorithm` | População, avaliação, torneio, crossover, mutação e estatísticas |
+| `RunTraining()` | Janela do jogo e laço principal do treino |
+| `RunChartWindow()` | Janela do gráfico e exportação do PNG |
+| `RunHeadless()` | Treino sem janela; no fim, gera o PNG e o GIF |
+| `RunPlay()` | Modo `--jogar`: usa a rede treinada sem treinar |
+| `SaveBest()` / `LoadBest()` | Salvam e carregam os pesos da rede |
+| `SaveCheckpoint()` / `LoadCheckpoint()` | Salvam e carregam a população inteira (`--continuar`) |
+| `GifWriter` | Grava o GIF animado direto em arquivo |
 
 ---
 
