@@ -337,5 +337,6 @@ No código, as principais partes são:
 ## 👥 Autores
 
 <!-- Coloque aqui os nomes dos integrantes do grupo -->
-- Nome do integrante 1
-- Nome do integrante 2
+- Gabriel Lueneberg - 14746439
+- Guilherme Magalhães Viana - 14614394
+
