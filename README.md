@@ -9,20 +9,27 @@ Projeto desenvolvido para a disciplina **SSC0713 (ICMC-USP)**, em C++ com a bibl
 ## 📸 Demonstração
 
 <!--
-  COMO ADICIONAR OS PRINTS:
+  COMO ADICIONAR AS MÍDIAS:
   1. Crie uma pasta chamada "docs" na raiz do repositório.
-  2. Salve o print da janela do jogo como       docs/jogo.png
-  3. Copie o gráfico gerado no fim do treino    docs/grafico_fitness.png
+  2. Grave a janela do jogo como GIF e salve como   docs/jogo.gif
+     (ex.: ScreenToGif; prefira menos de 10 MB para o README carregar rápido)
+  3. Copie o gráfico gerado no fim do treino        docs/grafico_fitness.png
      (o arquivo é salvo automaticamente ao lado do main.exe, em out/build/<preset>/)
   4. Faça commit e push da pasta docs.
+
+  ALTERNATIVA COM VÍDEO (MP4):
+  O GitHub não exibe um .mp4 salvo no repositório. Para usar vídeo, edite este
+  README pelo site do GitHub, apague o bloco <img> do GIF abaixo e ARRASTE o
+  arquivo .mp4 para o editor. O GitHub gera um link (user-attachments) que
+  aparece como um player de vídeo.
 -->
 
 ### O melhor indivíduo jogando
 
-> 📌 **Adicionar aqui o print do jogo** (`docs/jogo.png`)
+> 📌 **Adicionar aqui o GIF do jogo** (`docs/jogo.gif`)
 
 <p align="center">
-  <img src="docs/jogo.png" alt="Melhor indivíduo da geração jogando Snake" width="450">
+  <img src="docs/jogo.gif" alt="Melhor indivíduo da geração jogando Snake" width="450">
 </p>
 
 ### Evolução da população ao longo das gerações
@@ -299,7 +306,7 @@ Os arquivos `evolucao.csv` e `grafico_fitness.png` são gravados na mesma pasta 
 ├── CMakePresets.json   # configuração do compilador (MSYS2 / ucrt64)
 ├── README.md
 └── docs/               # imagens usadas neste README
-    ├── jogo.png
+    ├── jogo.gif
     └── grafico_fitness.png
 ```
 
