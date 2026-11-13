@@ -317,35 +317,6 @@ O resultado do treino é apenas uma lista de números: os pesos do perceptron. E
 
 ---
 
-## 📁 Estrutura do projeto
-
-```
-├── main.cpp            # jogo, rede neural, algoritmo genético e gráficos
-├── CMakeLists.txt      # receita de compilação (CMake)
-├── CMakePresets.json   # configuração do compilador (MSYS2 / ucrt64)
-├── README.md
-└── docs/               # imagens usadas neste README
-    ├── jogo.gif
-    └── grafico_fitness.png
-```
-
-No código, as principais partes são:
-
-| Parte | Responsabilidade |
-|---|---|
-| `class Game` | Regras do Snake, sensores e motivo do fim da partida |
-| `ChooseDirection()` | O perceptron: transforma sensores em uma ação |
-| `PlayGame()` | Joga uma partida e calcula o fitness |
-| `class GeneticAlgorithm` | População, avaliação, torneio, crossover, mutação e estatísticas |
-| `RunTraining()` | Janela do jogo e laço principal do treino |
-| `RunChartWindow()` | Janela do gráfico e exportação do PNG |
-| `RunHeadless()` | Treino sem janela; no fim, gera o PNG e o GIF |
-| `RunPlay()` | Modo `--jogar`: usa a rede treinada sem treinar |
-| `SaveBest()` / `LoadBest()` | Salvam e carregam os pesos da rede |
-| `GifWriter` | Grava o GIF animado direto em arquivo |
-
----
-
 ## 📚 Referências
 
 - DARWIN, C. *On the Origin of Species by Means of Natural Selection*. London: John Murray, 1859.
