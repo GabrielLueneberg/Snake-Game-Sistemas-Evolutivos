@@ -11,10 +11,9 @@ Projeto desenvolvido para a disciplina **SSC0713 (ICMC-USP)**, em C++ com a bibl
 <!--
   COMO ADICIONAR AS MÍDIAS:
   1. Crie uma pasta chamada "docs" na raiz do repositório.
-  2. Grave a janela do jogo como GIF e salve como   docs/jogo.gif
-     (ex.: ScreenToGif; prefira menos de 10 MB para o README carregar rápido)
-  3. Copie o gráfico gerado no fim do treino        docs/grafico_fitness.png
-     (o arquivo é salvo automaticamente ao lado do main.exe, em out/build/<preset>/)
+  2. Copie a animação gerada no fim do treino      melhor_jogando.gif  ->  docs/jogo.gif
+  3. Copie o gráfico gerado no fim do treino        grafico_fitness.png ->  docs/grafico_fitness.png
+     (os dois são salvos automaticamente ao lado do main.exe, em out/build/<preset>/)
   4. Faça commit e push da pasta docs.
 
   ALTERNATIVA COM VÍDEO (MP4):
@@ -26,7 +25,7 @@ Projeto desenvolvido para a disciplina **SSC0713 (ICMC-USP)**, em C++ com a bibl
 
 ### O melhor indivíduo jogando
 
-> 📌 **Adicionar aqui o GIF do jogo** (`docs/jogo.gif`)
+> 📌 **Adicionar aqui o GIF do jogo** (`docs/jogo.gif`, copiado de `melhor_jogando.gif`)
 
 <p align="center">
   <img src="docs/jogo.gif" alt="Melhor indivíduo da geração jogando Snake" width="450">
@@ -174,7 +173,7 @@ Cada indivíduo joga **3 partidas** em fases diferentes, e seu fitness é a **m�
 
 Para evitar partidas infinitas:
 - a cobra **morre de fome** se passar **300 passos sem comer**;
-- a partida termina ao atingir **10 000 passos**.
+- a partida termina ao atingir **100 000 passos** (limite alto, só para garantir que ela acaba).
 
 O máximo teórico é de **897 comidas** (o tabuleiro tem 30 × 30 = 900 células e a cobra começa com 3).
 
@@ -252,7 +251,7 @@ Todos ficam no topo do `main.cpp`:
 | `SIGMA_INIT` | `0.5` | Intensidade de mutação inicial (σ) |
 | `SIGMA_MIN` / `SIGMA_MAX` | `0.01` / `2.0` | Limites do σ |
 | `STARVE_LIMIT` | `300` | Passos sem comer até morrer de fome |
-| `MAX_STEPS` | `10000` | Limite de passos por partida |
+| `MAX_STEPS` | `100000` | Limite de passos por partida |
 | `CELL_COUNT` | `30` | Tamanho do tabuleiro (30 × 30) |
 | `GA_SEED` | `2026` | Semente aleatória (troque para repetir o experimento com outra sorte) |
 
@@ -288,13 +287,47 @@ cd ".\out\build\GCC 16.2.0 x86_64-w64-mingw32 (ucrt64)"
 .\main.exe                 # treino + janela do jogo + janela do gráfico
 .\main.exe --sem-janela    # treino mais rápido, só no terminal
 .\main.exe --grafico       # só a janela do gráfico (lê o evolucao.csv existente)
+.\main.exe --jogar         # usa a rede JÁ TREINADA para jogar fases novas, sem treinar
+.\main.exe --sem-janela --continuar   # continua o último treino em vez de começar do zero
 ```
 
 **Controles:**
 - Janela do jogo: **↑ / ↓** mudam a velocidade da exibição.
+- Modo `--jogar`: **R** inicia uma nova partida.
 - Janela do gráfico: **S** salva o gráfico em alta resolução (`grafico_fitness.png`, 2400 × 1500). O PNG também é salvo automaticamente no fim do treino.
 
-Os arquivos `evolucao.csv` e `grafico_fitness.png` são gravados na mesma pasta do `main.exe`.
+### Arquivos gerados
+
+Todos ficam na mesma pasta do `main.exe`:
+
+| Arquivo | Conteúdo |
+|---|---|
+| `evolucao.csv` | Estatísticas de cada geração |
+| `melhor_individuo.txt` | Pesos do melhor indivíduo: a **rede treinada** |
+| `populacao.txt` | População inteira da última geração (usada pelo `--continuar`) |
+| `grafico_fitness.png` | Gráfico da evolução (2400 × 1500) |
+| `melhor_jogando.gif` | Animação de uma partida do melhor da última geração |
+
+### Continuando um treino
+
+Se a curva ainda estiver subindo no fim do treino (sem convergir), não é preciso recomeçar do zero. A cada geração, o programa salva a **população inteira** em `populacao.txt`, junto com o estado do sorteio aleatório. Para treinar mais:
+
+1. Aumente `NUM_GENERATIONS` no `main.cpp` (por exemplo, de `200` para `400`) e compile.
+2. Rode com `--continuar` (com ou sem janela):
+   ```powershell
+   .\main.exe --sem-janela --continuar
+   ```
+
+O treino segue da última geração salva, e o gráfico mantém o histórico desde a geração 1. O resultado é **idêntico** ao de um treino que tivesse rodado todas as gerações de uma vez. Isso também protege contra interrupções: se o programa for fechado no meio, basta rodar de novo com `--continuar`. Só não é possível continuar se `SENSORES_AVANCADOS`, `NEURONIOS_OCULTOS` ou `POP_SIZE` tiverem mudado.
+
+### Usando a rede treinada
+
+O resultado do treino é apenas uma lista de números: os pesos do perceptron. Eles são salvos em `melhor_individuo.txt` a cada geração. O modo `--jogar` carrega esse arquivo e usa a rede **sem treinar de novo**, em fases sorteadas que a cobra nunca viu durante o treino. Assim dá para medir se ela realmente aprendeu a jogar (generalização). A tela mostra o recorde e a média de comidas das partidas.
+
+- **R:** nova partida · **↑ / ↓:** velocidade
+- Para usar outra rede salva: `.\main.exe --jogar caminho\do\arquivo.txt`
+- A rede só funciona com a mesma configuração (`SENSORES_AVANCADOS` e `NEURONIOS_OCULTOS`) com que foi treinada; se não combinar, o programa avisa.
+- Como a semente do algoritmo (`GA_SEED`) é fixa, rodar o treino de novo com o mesmo código gera **exatamente o mesmo resultado**. Para outro experimento, troque a semente.
 
 ---
 
@@ -320,6 +353,11 @@ No código, as principais partes são:
 | `class GeneticAlgorithm` | População, avaliação, torneio, crossover, mutação e estatísticas |
 | `RunTraining()` | Janela do jogo e laço principal do treino |
 | `RunChartWindow()` | Janela do gráfico e exportação do PNG |
+| `RunHeadless()` | Treino sem janela; no fim, gera o PNG e o GIF |
+| `RunPlay()` | Modo `--jogar`: usa a rede treinada sem treinar |
+| `SaveBest()` / `LoadBest()` | Salvam e carregam os pesos da rede |
+| `SaveCheckpoint()` / `LoadCheckpoint()` | Salvam e carregam a população inteira (`--continuar`) |
+| `GifWriter` | Grava o GIF animado direto em arquivo |
 
 ---
 
@@ -336,7 +374,5 @@ No código, as principais partes são:
 
 ## 👥 Autores
 
-<!-- Coloque aqui os nomes dos integrantes do grupo -->
 - Gabriel Lueneberg - 14746439
 - Guilherme Magalhães Viana - 14614394
-
